@@ -77,10 +77,10 @@ export default function Itinerary() {
       </header>
 
       <main>
-        <section>
-          <header>
-            <h2>Activities</h2>
-          </header>
+          <section>
+            <header>
+              <h2>Activities</h2>
+            </header>
 
             {activities.map(
               (
@@ -98,7 +98,8 @@ export default function Itinerary() {
                     {date_start?.split('T').join(' ')}
                     {date_end !== date_start ? (
                       <>
-                        {' '} to
+                        {' '}
+                        to
                         <br />
                         {date_end?.split('T').join(' ')}
                       </>
@@ -108,129 +109,120 @@ export default function Itinerary() {
                 </aside>
               )
             )}
+            <ActivitiesTable
+              id={id}
+              category="activities"
+              activities={activities}
+              setActivities={setActivities}
+            />
+            <hr />
+          </section>
 
-          <table>
-            <thead>
-              <tr>
-                <td>Name</td>
-                <td>Itinerary #</td>
-                <td>Location</td>
-                <td>Detail</td>
-                <td>Date Start</td>
-                <td>Date End</td>
-                <td>Cost</td>
-                <td>Notes</td>
-              </tr>
-            </thead>
-            <tbody>
-              {itinerary
-                ?.filter((entry) => entry.category === 'activity')
-                .map((entry, index) => (
-                  <tr key={index}>
-                    <td>{entry.name}</td>
-                    <td>{entry.itinerary}</td>
-                    <td>{entry['location_1']}</td>
-                    <td>{entry['location_2']}</td>
-                    <td>{entry['date_start']}</td>
-                    <td>{entry['date_end']}</td>
-                    <td>{entry.cost}</td>
-                    <td>{entry.notes}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </section>
+          <section>
+            <header>
+              <h2>Transportation</h2>
+            </header>
+            <ActivitiesTable
+              id={id}
+              category="transportation"
+              activities={transportation}
+              setActivities={setTransportation}
+            />
+            <hr />
+          </section>
 
-        <hr />
+          <section>
+            <header>
+              <h2>Housing</h2>
+            </header>
+            <ActivitiesTable
+              id={id}
+              category="housing"
+              activities={housing}
+              setActivities={setHousing}
+            />
+            <hr />
+          </section>
+interface ActivitiesTableProps {
+  id: string;
+  category: 'activities' | 'transportation' | 'housing';
+  activities: Activity[];
+  setActivities: React.Dispatch<React.SetStateAction<Activity[] | null>>;
+}
 
-        <section>
-          <header>
-            <h2>Transportation</h2>
-          </header>
-          <table>
-            <thead>
-              <tr>
-                <td>Name</td>
-                <td>Itinerary #</td>
-                <td>From</td>
-                <td>To</td>
-                <td>Date Start</td>
-                <td>Date End</td>
-                <td>Cost</td>
-                <td>Notes</td>
-              </tr>
-            </thead>
-            <tbody>
-              {itinerary
-                ?.filter((entry) => entry.category === 'transportation')
-                .map((entry, index) => (
-                  <tr key={index}>
-                    <td>{entry.name}</td>
-                    <td>{entry.itinerary}</td>
-                    <td>{entry['location_1']}</td>
-                    <td>{entry['location_2']}</td>
-                    <td>{entry['date_start']}</td>
-                    <td>{entry['date_end']}</td>
-                    <td>{entry.cost}</td>
-                    <td>{entry.notes}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </section>
-
-        <hr />
-
-        <section>
-          <header>
-            <h2>Housing</h2>
-          </header>
-          <table>
-            <thead>
-              <tr>
-                <td>Name</td>
-                <td>Itinerary #</td>
-                <td>Location</td>
-                <td>Detail</td>
-                <td>Date Start</td>
-                <td>Date End</td>
-                <td>Cost</td>
-                <td>Notes</td>
-              </tr>
-            </thead>
-            <tbody>
-              {itinerary
-                ?.filter((entry) => entry.category === 'housing')
-                .map((entry, index) => (
-                  <tr key={index}>
-                    <td>{entry.name}</td>
-                    <td>{entry.itinerary}</td>
-                    <td>{entry['location_1']}</td>
-                    <td>{entry['location_2']}</td>
-                    <td>{entry['date_start']}</td>
-                    <td>{entry['date_end']}</td>
-                    <td>{entry.cost}</td>
-                    <td>{entry.notes}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </section>
-      </main>
-    </>
+function ActivitiesTable({
+  id,
+  category,
+  activities,
+  setActivities,
+}: ActivitiesTableProps) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <td>Name</td>
+          <td>Itinerary #</td>
+          <td>{category === 'transportation' ? 'From' : 'Location'}</td>
+          <td>{category === 'transportation' ? 'To' : 'Detail'}</td>
+          <td>Date Start</td>
+          <td>Date End</td>
+          <td>Cost</td>
+          <td>Notes</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        {activities.map((activity, index) => (
+          <tr key={index}>
+            <td>{activity.name}</td>
+            <td>{activity.itinerary}</td>
+            <td>{activity['location_1']}</td>
+            <td>{activity['location_2']}</td>
+            <td>{activity['date_start']}</td>
+            <td>{activity['date_end']}</td>
+            <td>{activity.cost}</td>
+            <td>{activity.notes}</td>
+            <td>
+              <a>
+                <i>
+                  <s>Edit</s>
+                </i>
+              </a>
+              <a onClick={() => handleDelete(id, category, index)}>
+                <b>Delete</b>
+              </a>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 
-  async function handleClickDelete() {
-    const confirmDelete = confirm(
-      'Are you sure you want to delete this itinerary?'
+  async function handleDelete(
+    id: string,
+    category: string,
+    deletedIndex: number
+  ) {
+    if (!confirm('Delete activity?')) {
+      return;
+    }
+
+    const filteredActivities = activities.filter(
+      (_, index) => index !== deletedIndex
     );
 
-    if (confirmDelete) {
-      await fetch(`/api/itineraries/${id}`, {
-        method: 'DELETE',
-      });
+    const response = await fetch(`/api/itineraries/${id}/${category}`, {
+      method: 'PUT',
+      body: JSON.stringify(filteredActivities),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-      navigate('/');
+    if (response.status >= 400) {
+      return alert('An error occurred.');
     }
+
+    setActivities(filteredActivities);
   }
 }
