@@ -58,6 +58,9 @@ export default function Itinerary() {
           </ul>
         </nav>
         <h1>{name}</h1>
+        <button type="button" onClick={handleClickDelete}>
+          <i>Delete itinerary</i>
+        </button>
         <Link to={`/itineraries/${id}/create`}>
           <b>Create activity</b>
         </Link>
@@ -203,4 +206,18 @@ export default function Itinerary() {
       </main>
     </>
   );
+
+  async function handleClickDelete() {
+    const confirmDelete = confirm(
+      'Are you sure you want to delete this itinerary?'
+    );
+
+    if (confirmDelete) {
+      await fetch(`/api/itineraries/${id}`, {
+        method: 'DELETE',
+      });
+
+      navigate('/itineraries');
+    }
+  }
 }
