@@ -87,9 +87,14 @@ export default function Itinerary() {
                     <small>{location_1}</small>
                   </p>
                   <p>
-                    {date_start?.split('T').join(' ')} to
-                    <br />
-                    {date_end?.split('T').join(' ')}
+                    {date_start?.split('T').join(' ')}
+                    {date_end !== date_start ? (
+                      <>
+                        {' '} to
+                        <br />
+                        {date_end?.split('T').join(' ')}
+                      </>
+                    ) : null}
                   </p>
                   {cost && <p>Cost: {cost}</p>}
                 </aside>
