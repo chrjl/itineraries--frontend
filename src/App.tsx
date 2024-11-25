@@ -1,5 +1,5 @@
-function App() {
-  return <h1>Hello World!</h1>;
-}
+import { Navigate } from 'react-router';
 
-export default App;
+export default function App() {
+  return <Navigate to="/itineraries" />;
+}
