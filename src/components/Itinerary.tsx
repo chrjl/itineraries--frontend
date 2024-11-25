@@ -87,33 +87,7 @@ export default function Itinerary() {
               <h2>Activities</h2>
             </header>
 
-            {activities.map(
-              (
-                { name, location_1, location_2, cost, date_start, date_end },
-                index
-              ) => (
-                <aside key={index}>
-                  <h3>{name}</h3>
-                  <p>
-                    {location_2}
-                    <br />
-                    <small>{location_1}</small>
-                  </p>
-                  <p>
-                    {date_start?.split('T').join(' ')}
-                    {date_end !== date_start ? (
-                      <>
-                        {' '}
-                        to
-                        <br />
-                        {date_end?.split('T').join(' ')}
-                      </>
-                    ) : null}
-                  </p>
-                  {cost && <p>Cost: {cost}</p>}
-                </aside>
-              )
-            )}
+            <ActivitiesCards activities={activities} />
             <ActivitiesTable
               id={id}
               category="activities"
@@ -252,4 +226,35 @@ function ActivitiesTable({
 
     setActivities(filteredActivities);
   }
+}
+
+interface ActivitiesCardsProps {
+  activities: Activity[];
+}
+
+function ActivitiesCards({ activities }: ActivitiesCardsProps) {
+  return activities.map(
+    ({ name, location_1, location_2, cost, date_start, date_end }, index) => (
+      <aside key={index}>
+        <h3>{name}</h3>
+        <p>
+          {location_2}
+          <br />
+          <small>{location_1}</small>
+        </p>
+        <p>
+          {date_start?.split('T').join(' ')}
+          {date_end !== date_start ? (
+            <>
+              {' '}
+              to
+              <br />
+              {date_end?.split('T').join(' ')}
+            </>
+          ) : null}
+        </p>
+        {cost && <p>Cost: {cost}</p>}
+      </aside>
+    )
+  );
 }
