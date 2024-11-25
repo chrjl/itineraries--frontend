@@ -29,8 +29,8 @@ export default function CreateActivity() {
             <label htmlFor="category">Category:</label>
             <select id="category" name="category" onChange={handleChange}>
               <option value="activity">Activity</option>
-              <option value="housing">Housing</option>
               <option value="transportation">Transportation</option>
+              <option value="housing">Housing</option>
             </select>
             <label htmlFor="name">Name:</label>
             <input type="text" id="name" name="name" required />

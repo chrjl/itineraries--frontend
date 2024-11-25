@@ -9,8 +9,8 @@ interface Activity {
   location_2?: string;
   date_start?: string;
   date_end?: string;
-  cost: number;
-  notes: string;
+  cost?: number;
+  notes?: string;
 }
 
 export default function Itinerary() {
@@ -56,6 +56,10 @@ export default function Itinerary() {
       });
   }, [id, navigate]);
 
+  if (!id) {
+    return null;
+  }
+
   return (
     <>
       <header>
@@ -77,6 +81,7 @@ export default function Itinerary() {
       </header>
 
       <main>
+        {activities && (
           <section>
             <header>
               <h2>Activities</h2>
@@ -117,7 +122,9 @@ export default function Itinerary() {
             />
             <hr />
           </section>
+        )}
 
+        {transportation && (
           <section>
             <header>
               <h2>Transportation</h2>
@@ -130,7 +137,9 @@ export default function Itinerary() {
             />
             <hr />
           </section>
+        )}
 
+        {housing && (
           <section>
             <header>
               <h2>Housing</h2>
@@ -143,6 +152,10 @@ export default function Itinerary() {
             />
             <hr />
           </section>
+        )}
+      </main>
+    </>
+  );
 
   async function handleDeleteItinerary() {
     if (!confirm('Delete itinerary?')) {
@@ -155,6 +168,8 @@ export default function Itinerary() {
 
     navigate('/');
   }
+}
+
 interface ActivitiesTableProps {
   id: string;
   category: 'activities' | 'transportation' | 'housing';
