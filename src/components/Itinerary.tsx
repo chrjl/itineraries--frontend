@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router';
 
-interface Activity {
+export interface Activity {
   category: 'activity' | 'transportation' | 'housing';
   name: string;
   itinerary?: string;
