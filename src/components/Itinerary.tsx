@@ -58,6 +58,9 @@ export default function Itinerary() {
           </ul>
         </nav>
         <h1>{name}</h1>
+        <Link to={`/itineraries/${id}/create`}>
+          <b>Create activity</b>
+        </Link>
       </header>
 
       <main>
