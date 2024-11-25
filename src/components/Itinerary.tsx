@@ -68,9 +68,9 @@ export default function Itinerary() {
           </ul>
         </nav>
         <h1>{name}</h1>
-        <button type="button" onClick={handleClickDelete}>
+        <a type="button" onClick={handleDeleteItinerary}>
           <i>Delete itinerary</i>
-        </button>
+        </a>
         <Link to={`create`}>
           <b>Create activity</b>
         </Link>
@@ -143,6 +143,18 @@ export default function Itinerary() {
             />
             <hr />
           </section>
+
+  async function handleDeleteItinerary() {
+    if (!confirm('Delete itinerary?')) {
+      return;
+    }
+
+    await fetch(`/api/itineraries/${id}`, {
+      method: 'DELETE',
+    });
+
+    navigate('/');
+  }
 interface ActivitiesTableProps {
   id: string;
   category: 'activities' | 'transportation' | 'housing';
