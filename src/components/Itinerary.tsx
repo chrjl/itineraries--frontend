@@ -15,7 +15,9 @@ interface Activity {
 
 export default function Itinerary() {
   const { id } = useParams();
-  const [itinerary, setItinerary] = useState<Activity[] | null>(null);
+  const [activities, setActivities] = useState<Activity[] | null>(null);
+  const [housing, setHousing] = useState<Activity[] | null>(null);
+  const [transportation, setTransportation] = useState<Activity[] | null>(null);
   const [name, setName] = useState('');
 
   const navigate = useNavigate();
@@ -37,7 +39,15 @@ export default function Itinerary() {
           (a['date_start'] || 'Z') < (b['date_start'] || 'Z') ? -1 : 1
         );
 
-        setItinerary(data);
+        setActivities(
+          data?.filter((entry: Activity) => entry.category === 'activity')
+        );
+        setHousing(
+          data?.filter((entry: Activity) => entry.category === 'housing')
+        );
+        setTransportation(
+          data?.filter((entry: Activity) => entry.category === 'transportation')
+        );
       })
       .catch((err) => {
         console.error(err);
@@ -72,9 +82,7 @@ export default function Itinerary() {
             <h2>Activities</h2>
           </header>
 
-          {itinerary
-            ?.filter((entry) => entry.category === 'activity')
-            .map(
+            {activities.map(
               (
                 { name, location_1, location_2, cost, date_start, date_end },
                 index
