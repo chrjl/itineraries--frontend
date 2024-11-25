@@ -22,7 +22,7 @@ export default function Itineraries() {
     <>
       <header>
         <h1>Itineraries</h1>
-        <Link to="/itineraries/new">
+        <Link to="new">
           <b>Create new</b>
         </Link>
       </header>
@@ -40,7 +40,7 @@ export default function Itineraries() {
             <tbody>
               {itineraries?.map(({ name, id, createdTime, modifiedTime }) => (
                 <tr key={id}>
-                  <td>{<Link to={`/itineraries/${id}`}>{name}</Link>}</td>
+                  <td>{<Link to={`${id}`}>{name}</Link>}</td>
                   <td>
                     {`${createdTime?.slice(0, 10)} ${createdTime?.slice(11, 19)}`}
                   </td>

@@ -42,7 +42,7 @@ export default function Itinerary() {
       .catch((err) => {
         console.error(err);
         alert('There was an error. Redirecting...');
-        navigate('/itineraries');
+        navigate('/');
       });
   }, [id, navigate]);
 
@@ -52,7 +52,7 @@ export default function Itinerary() {
         <nav>
           <ul>
             <li>
-              <Link to="/itineraries">itineraries</Link> &gt;
+              <Link to="..">itineraries</Link> &gt;
             </li>
             <li> {id}</li>
           </ul>
@@ -61,7 +61,7 @@ export default function Itinerary() {
         <button type="button" onClick={handleClickDelete}>
           <i>Delete itinerary</i>
         </button>
-        <Link to={`/itineraries/${id}/create`}>
+        <Link to={`create`}>
           <b>Create activity</b>
         </Link>
       </header>
@@ -217,7 +217,7 @@ export default function Itinerary() {
         method: 'DELETE',
       });
 
-      navigate('/itineraries');
+      navigate('/');
     }
   }
 }

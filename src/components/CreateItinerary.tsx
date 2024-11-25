@@ -9,7 +9,7 @@ export default function CreateItinerary() {
         <nav>
           <ul>
             <li>
-              <Link to="/itineraries">itineraries</Link> &gt;
+              <Link to="..">itineraries</Link> &gt;
             </li>
             <li>new</li>
           </ul>
@@ -50,6 +50,6 @@ export default function CreateItinerary() {
     }
 
     const file = await response.json();
-    navigate(`/itineraries/${file.id}`);
+    navigate(`${file.id}`);
   }
 }

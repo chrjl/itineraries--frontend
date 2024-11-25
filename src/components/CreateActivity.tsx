@@ -12,10 +12,10 @@ export default function CreateActivity() {
         <nav>
           <ul>
             <li>
-              <Link to="/itineraries">itineraries</Link> &gt;
+              <Link to="../..">itineraries</Link> &gt;
             </li>
             <li>
-              <Link to={`/itineraries/${id}`}>{id}</Link> &gt;
+              <Link to={`../${id}`}>{id}</Link> &gt;
             </li>
             <li>create</li>
           </ul>
@@ -98,7 +98,7 @@ export default function CreateActivity() {
       return;
     }
 
-    navigate(`/itineraries/${id}`);
+    navigate(`../${id}`);
   }
 
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
