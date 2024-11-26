@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router';
 
 import ActivitiesTable from './ActivitiesTable';
 import ActivitiesCards from './ActivitiesCards';
+import EditActivityForm from './EditActivityForm';
 
 export interface Activity {
   category: 'activity' | 'transportation' | 'housing';
@@ -18,10 +19,11 @@ export interface Activity {
 
 export default function Itinerary() {
   const { id } = useParams();
-  const [activities, setActivities] = useState<Activity[] | null>(null);
-  const [housing, setHousing] = useState<Activity[] | null>(null);
-  const [transportation, setTransportation] = useState<Activity[] | null>(null);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [housing, setHousing] = useState<Activity[]>([]);
+  const [transportation, setTransportation] = useState<Activity[]>([]);
   const [name, setName] = useState('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -78,12 +80,18 @@ export default function Itinerary() {
         <a type="button" onClick={handleDeleteItinerary}>
           <i>Delete itinerary</i>
         </a>
-        <Link to={`create`}>
-          <b>Create activity</b>
-        </Link>
+        <button type="button" onClick={handleOpenDialog}>
+          Create activity
+        </button>
       </header>
 
       <main>
+        <CreateActivityDialog
+          open={showCreateModal}
+          onClose={handleCloseDialog}
+          onSubmit={handleCreateActivity}
+        />
+
         {activities && (
           <section>
             <header>
@@ -145,4 +153,97 @@ export default function Itinerary() {
 
     navigate('/');
   }
+
+  function handleOpenDialog() {
+    setShowCreateModal(true);
+  }
+
+  function handleCloseDialog() {
+    setShowCreateModal(false);
+  }
+
+  async function handleCreateActivity(e: React.FormEvent<HTMLFormElement>) {
+    const data = Object.fromEntries(
+      [...new FormData(e.currentTarget)].filter(([, v]) => v && v !== undefined)
+    );
+
+    data.date_start = data.time_start
+      ? `${data.date_start}T${data.time_start}`
+      : data.date_start;
+
+    data.date_end = data.date_end
+      ? data.time_end
+        ? `${data.date_end}T${data.time_end}`
+        : data.date_end
+      : data.date_start;
+
+    delete data.time_start;
+    delete data.time_end;
+
+    const response = await fetch(`/api/itineraries/${id}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status >= 400) {
+      alert('Error, check console for details');
+      const err = await response.json();
+      console.error(err);
+      return;
+    }
+
+    if (data.category === 'housing') {
+      setHousing((housing) => [...housing, data as unknown as Activity]);
+    } else if (data.category === 'transportation') {
+      setHousing((housing) => [...housing, data as unknown as Activity]);
+    } else {
+      setActivities((activities) => [
+        ...activities,
+        data as unknown as Activity,
+      ]);
+    }
+  }
+}
+
+interface CreateActivityDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+}
+
+function CreateActivityDialog({
+  open,
+  onClose,
+  onSubmit,
+}: CreateActivityDialogProps) {
+  const dialog = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      dialog.current?.showModal();
+    } else {
+      dialog.current?.close();
+    }
+  }, [open, onClose]);
+
+  return (
+    <dialog ref={dialog} onClose={onClose} style={{ width: 'auto' }}>
+      <header>
+        <h1>Create activity</h1>
+        <button onClick={onClose} type="button">
+          Close
+        </button>
+      </header>
+
+      <EditActivityForm
+        onSubmit={(e) => {
+          onSubmit(e);
+          e.currentTarget.reset();
+        }}
+      />
+    </dialog>
+  );
 }
