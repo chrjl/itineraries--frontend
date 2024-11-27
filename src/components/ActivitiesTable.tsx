@@ -49,6 +49,7 @@ export default function ActivitiesTable({
           category={focusedActivity?.category}
           defaultValues={focusedActivity}
           onSubmit={handleSubmit}
+          onSuccess={handleSuccess}
         />
       </dialog>
 
@@ -118,6 +119,7 @@ export default function ActivitiesTable({
     }
 
     setActivities(filteredActivities);
+    alert('Success!');
   }
 
   function handleOpenModal(index: number, activity: Activity) {
@@ -130,32 +132,13 @@ export default function ActivitiesTable({
     setShowModal(false);
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    if (focusedIndex === null) {
-      return;
+  async function handleSubmit(data: Activity) {
+    if (typeof focusedIndex !== 'number') {
+      throw new Error('An error occurred');
     }
 
-    const data = Object.fromEntries(
-      [...new FormData(e.currentTarget)].filter(([, value]) => value !== '')
-    );
-
-    data.date_start = data.time_start
-      ? `${data.date_start}T${data.time_start}`
-      : data.date_start;
-
-    data.date_end = data.date_end
-      ? data.time_end
-        ? `${data.date_end}T${data.time_end}`
-        : data.date_end
-      : data.date_start;
-
-    delete data.time_start;
-    delete data.time_end;
-
-    // <select> is not returning value in FormData. I don't know why, but this is a workaround.
-    data.category = category;
-
     const updatedActivities = [...activities];
+
     updatedActivities[focusedIndex] = data as unknown as Activity;
 
     const response = await fetch(`/api/itineraries/${id}/${category}`, {
@@ -166,13 +149,19 @@ export default function ActivitiesTable({
       },
     });
 
-    if (response.status >= 400) {
-      alert('Error, check console for details');
-      const err = await response.json();
-      console.error(err);
-      return;
-    }
+    return response;
+  }
 
-    setActivities(updatedActivities);
+  function handleSuccess(data: Activity) {
+    setActivities((activities) => {
+      if (!focusedIndex) {
+        throw new Error('Something went wrong');
+      }
+
+      const updatedActivities = [...activities];
+      updatedActivities[focusedIndex] = data;
+
+      return updatedActivities;
+    });
   }
 }

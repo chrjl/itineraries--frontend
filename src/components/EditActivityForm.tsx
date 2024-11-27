@@ -3,15 +3,17 @@ import { useState } from 'react';
 import type { Activity } from './Itinerary';
 
 interface Props {
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   defaultValues?: Activity;
   category?: Activity['category'];
+  onSuccess: (data: Activity) => void;
+  onSubmit: (data: Activity) => Promise<Response>;
 }
 
 export default function EditActivityForm({
-  onSubmit,
   defaultValues,
   category,
+  onSubmit,
+  onSuccess,
 }: Props) {
   const [isTransportation, setIsTransportation] = useState(false);
 
@@ -21,7 +23,7 @@ export default function EditActivityForm({
   const defaultEndTime = defaultValues?.date_end?.slice(11);
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit}>
       <label htmlFor="category">Category:</label>
       <select
         id="category"
@@ -110,5 +112,42 @@ export default function EditActivityForm({
 
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     setIsTransportation(e.currentTarget.value === 'transportation');
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const form = e.currentTarget;
+
+    const data = Object.fromEntries(
+      [...new FormData(form)].filter(([, v]) => v && v !== undefined)
+    );
+
+    data.date_start = data.time_start
+      ? `${data.date_start}T${data.time_start}`
+      : data.date_start;
+
+    data.date_end = data.date_end
+      ? data.time_end
+        ? `${data.date_end}T${data.time_end}`
+        : data.date_end
+      : data.date_start;
+
+    delete data.time_start;
+    delete data.time_end;
+
+    const response = await onSubmit(data as unknown as Activity);
+
+    if (response.status >= 400) {
+      alert('Error, check console for details');
+      const err = await response.json();
+      console.error(err);
+      return;
+    }
+
+    if (onSuccess) {
+      onSuccess(data as unknown as Activity);
+    }
+
+    alert('Success!');
+    form.reset();
   }
 }

@@ -89,7 +89,8 @@ export default function Itinerary() {
         <CreateActivityDialog
           open={showCreateModal}
           onClose={handleCloseDialog}
-          onSubmit={handleCreateActivity}
+          onSubmit={handleSubmit}
+          onSuccess={handleSuccess}
         />
 
         {activities && (
@@ -101,7 +102,7 @@ export default function Itinerary() {
             <div id="activities-cards">
               <ActivitiesCards activities={activities} />
             </div>
-            
+
             <ActivitiesTable
               id={id}
               category="activities"
@@ -165,24 +166,7 @@ export default function Itinerary() {
     setShowCreateModal(false);
   }
 
-  async function handleCreateActivity(e: React.FormEvent<HTMLFormElement>) {
-    const data = Object.fromEntries(
-      [...new FormData(e.currentTarget)].filter(([, v]) => v && v !== undefined)
-    );
-
-    data.date_start = data.time_start
-      ? `${data.date_start}T${data.time_start}`
-      : data.date_start;
-
-    data.date_end = data.date_end
-      ? data.time_end
-        ? `${data.date_end}T${data.time_end}`
-        : data.date_end
-      : data.date_start;
-
-    delete data.time_start;
-    delete data.time_end;
-
+  async function handleSubmit(data: Activity) {
     const response = await fetch(`/api/itineraries/${id}`, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -191,22 +175,16 @@ export default function Itinerary() {
       },
     });
 
-    if (response.status >= 400) {
-      alert('Error, check console for details');
-      const err = await response.json();
-      console.error(err);
-      return;
-    }
+    return response;
+  }
 
+  function handleSuccess(data: Activity) {
     if (data.category === 'housing') {
-      setHousing((housing) => [...housing, data as unknown as Activity]);
+      setHousing((housing) => [...housing, data]);
     } else if (data.category === 'transportation') {
-      setHousing((housing) => [...housing, data as unknown as Activity]);
+      setHousing((housing) => [...housing, data]);
     } else {
-      setActivities((activities) => [
-        ...activities,
-        data as unknown as Activity,
-      ]);
+      setActivities((activities) => [...activities, data]);
     }
   }
 }
@@ -214,13 +192,15 @@ export default function Itinerary() {
 interface CreateActivityDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (data: Activity) => Promise<Response>;
+  onSuccess: (data: Activity) => void;
 }
 
 function CreateActivityDialog({
   open,
   onClose,
   onSubmit,
+  onSuccess,
 }: CreateActivityDialogProps) {
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -241,12 +221,7 @@ function CreateActivityDialog({
         </button>
       </header>
 
-      <EditActivityForm
-        onSubmit={(e) => {
-          onSubmit(e);
-          e.currentTarget.reset();
-        }}
-      />
+      <EditActivityForm onSubmit={onSubmit} onSuccess={onSuccess} />
     </dialog>
   );
 }
