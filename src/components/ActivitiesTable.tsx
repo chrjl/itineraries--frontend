@@ -74,8 +74,8 @@ export default function ActivitiesTable({
               <td>{activity.itinerary}</td>
               <td>{activity['location_1']}</td>
               <td>{activity['location_2']}</td>
-              <td>{activity['date_start']}</td>
-              <td>{activity['date_end']}</td>
+              <td>{activity['date_start']?.split('T').join(' ')}</td>
+              <td>{activity['date_end']?.split('T').join(' ')}</td>
               <td>{activity.cost}</td>
               <td>{activity.notes}</td>
               <td>
