@@ -56,7 +56,7 @@ export default function ActivitiesTable({
         <thead>
           <tr>
             <td>Name</td>
-            <td>Itinerary #</td>
+            <td>Itinerary#</td>
             <td>{category === 'transportation' ? 'From' : 'Location'}</td>
             <td>{category === 'transportation' ? 'To' : 'Detail'}</td>
             <td>Date Start</td>

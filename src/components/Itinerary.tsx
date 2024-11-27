@@ -77,9 +77,9 @@ export default function Itinerary() {
           </ul>
         </nav>
         <h1>{name}</h1>
-        <a type="button" onClick={handleDeleteItinerary}>
+        <button type="button" onClick={handleDeleteItinerary}>
           <i>Delete itinerary</i>
-        </a>
+        </button>{' '}
         <button type="button" onClick={handleOpenDialog}>
           Create activity
         </button>
@@ -98,7 +98,10 @@ export default function Itinerary() {
               <h2>Activities</h2>
             </header>
 
-            <ActivitiesCards activities={activities} />
+            <div id="activities-cards">
+              <ActivitiesCards activities={activities} />
+            </div>
+            
             <ActivitiesTable
               id={id}
               category="activities"

@@ -1,0 +1,33 @@
+@media print {
+  header nav,
+  header button {
+    display: none;
+  }
+
+  main,
+  header {
+    padding: 0;
+  }
+
+  section {
+    page-break-inside: avoid;
+  }
+
+  hr {
+    margin: 0;
+  }
+
+  table {
+    max-width: 100vw;
+    table-layout: fixed;
+    white-space: wrap;
+  }
+
+  table button {
+    display: none;
+  }
+
+  #activities-cards {
+    display: none;
+  }
+}
