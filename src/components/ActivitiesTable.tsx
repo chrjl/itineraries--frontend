@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 
-import EditActivityForm from './EditActivityForm';
+import Table from 'react-bootstrap/Table';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Button from 'react-bootstrap/Button';
+
+import ActivityEditorModal from './ActivityEditorModal';
 import type { Activity } from './Itinerary';
 
 interface Props {
@@ -34,43 +38,33 @@ export default function ActivitiesTable({
 
   return (
     <>
-      <dialog
-        ref={editActivityModal}
+      <ActivityEditorModal
+        title="Edit activity"
+        open={showModal}
         onClose={handleCloseModal}
-        style={{ width: 'auto' }}
-      >
-        <header>
-          <h1>Edit activity</h1>
-          <button type="button" onClick={handleCloseModal}>
-            Close
-          </button>
-        </header>
-        <EditActivityForm
-          category={focusedActivity?.category}
-          defaultValues={focusedActivity}
-          onSubmit={handleSubmit}
-          onSuccess={handleSuccess}
-        />
-      </dialog>
+        defaultValues={focusedActivity}
+        onSubmit={handleSubmit}
+        onSuccess={handleSuccess}
+      />
 
-      <table>
+      <Table hover responsive>
         <thead>
           <tr>
-            <td>Name</td>
-            <td>Itinerary#</td>
-            <td>{category === 'transportation' ? 'From' : 'Location'}</td>
-            <td>{category === 'transportation' ? 'To' : 'Detail'}</td>
-            <td>Date Start</td>
-            <td>Date End</td>
-            <td>Cost</td>
-            <td>Notes</td>
-            <td></td>
+            <th>Name</th>
+            <th>Itinerary#</th>
+            <th>{category === 'transportation' ? 'From' : 'Location'}</th>
+            <th>{category === 'transportation' ? 'To' : 'Detail'}</th>
+            <th>Date Start</th>
+            <th>Date End</th>
+            <th>Cost</th>
+            <th>Notes</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {activities.map((activity, index) => (
             <tr key={index}>
-              <td>{activity.name}</td>
+              <th>{activity.name}</th>
               <td>{activity.itinerary}</td>
               <td>{activity['location_1']}</td>
               <td>{activity['location_2']}</td>
@@ -79,17 +73,26 @@ export default function ActivitiesTable({
               <td>{activity.cost}</td>
               <td>{activity.notes}</td>
               <td>
-                <button onClick={() => handleOpenModal(index, activity)}>
-                  Edit
-                </button>
-                <button onClick={() => handleDelete(id, category, index)}>
-                  <b>Delete</b>
-                </button>
+                <ButtonGroup>
+                  <Button
+                    size="sm"
+                    onClick={() => handleOpenModal(index, activity)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={() => handleDelete(id, category, index)}
+                  >
+                    Delete
+                  </Button>
+                </ButtonGroup>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </>
   );
 
@@ -163,5 +166,7 @@ export default function ActivitiesTable({
 
       return updatedActivities;
     });
+
+    setShowModal(false);
   }
 }

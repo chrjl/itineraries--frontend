@@ -1,9 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router';
+
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import ActivitiesTable from './ActivitiesTable';
 import ActivitiesCards from './ActivitiesCards';
-import EditActivityForm from './EditActivityForm';
+import ActivityEditorModal from './ActivityEditorModal';
 
 export interface Activity {
   category: 'activity' | 'transportation' | 'housing';
@@ -23,7 +28,7 @@ export default function Itinerary() {
   const [housing, setHousing] = useState<Activity[]>([]);
   const [transportation, setTransportation] = useState<Activity[]>([]);
   const [name, setName] = useState('');
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -68,78 +73,90 @@ export default function Itinerary() {
   return (
     <>
       <header>
-        <nav>
-          <ul>
-            <li>
-              <Link to="..">itineraries</Link> &gt;
-            </li>
-            <li> {id}</li>
-          </ul>
-        </nav>
-        <h1>{name}</h1>
-        <button type="button" onClick={handleDeleteItinerary}>
-          <i>Delete itinerary</i>
-        </button>{' '}
-        <button type="button" onClick={handleOpenDialog}>
-          Create activity
-        </button>
+        <Navbar bg="black" data-bs-theme="dark">
+          <Container>
+            <Navbar.Brand>{name}</Navbar.Brand>
+            <Button variant="danger" size="sm" onClick={handleDeleteItinerary}>
+              Delete
+            </Button>
+          </Container>
+        </Navbar>
+
+        <Container>
+          <Breadcrumb>
+            <Breadcrumb.Item active>
+              <Link to="..">Itineraries</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item active>{id}</Breadcrumb.Item>
+          </Breadcrumb>
+        </Container>
+
+        <Container className="text-center py-4">
+          <Button type="button" variant="success" onClick={handleOpenDialog}>
+            Create activity
+          </Button>
+        </Container>
       </header>
 
       <main>
-        <CreateActivityDialog
-          open={showCreateModal}
+        <ActivityEditorModal
+          title="Create Activity"
+          open={showModal}
           onClose={handleCloseDialog}
           onSubmit={handleSubmit}
           onSuccess={handleSuccess}
         />
 
         {activities && (
-          <section>
-            <header>
-              <h2>Activities</h2>
-            </header>
+          <section className="pb-4">
+            <Container>
+              <header>
+                <h2>Activities</h2>
+              </header>
 
-            <div id="activities-cards">
-              <ActivitiesCards activities={activities} />
-            </div>
+              <div id="activities-cards" className="pb-4">
+                <ActivitiesCards activities={activities} />
+              </div>
 
-            <ActivitiesTable
-              id={id}
-              category="activities"
-              activities={activities}
-              setActivities={setActivities}
-            />
-            <hr />
+              <ActivitiesTable
+                id={id}
+                category="activities"
+                activities={activities}
+                setActivities={setActivities}
+              />
+            </Container>
           </section>
         )}
 
         {transportation && (
-          <section>
-            <header>
-              <h2>Transportation</h2>
-            </header>
-            <ActivitiesTable
-              id={id}
-              category="transportation"
-              activities={transportation}
-              setActivities={setTransportation}
-            />
-            <hr />
+          <section className="pb-4">
+            <Container>
+              <header>
+                <h2>Transportation</h2>
+              </header>
+              <ActivitiesTable
+                id={id}
+                category="transportation"
+                activities={transportation}
+                setActivities={setTransportation}
+              />
+            </Container>
           </section>
         )}
 
         {housing && (
-          <section>
-            <header>
-              <h2>Housing</h2>
-            </header>
-            <ActivitiesTable
-              id={id}
-              category="housing"
-              activities={housing}
-              setActivities={setHousing}
-            />
-            <hr />
+          <section className="pb-4">
+            <Container>
+              <header>
+                <h2>Housing</h2>
+              </header>
+              <ActivitiesTable
+                id={id}
+                category="housing"
+                activities={housing}
+                setActivities={setHousing}
+              />
+            </Container>
           </section>
         )}
       </main>
@@ -159,11 +176,11 @@ export default function Itinerary() {
   }
 
   function handleOpenDialog() {
-    setShowCreateModal(true);
+    setShowModal(true);
   }
 
   function handleCloseDialog() {
-    setShowCreateModal(false);
+    setShowModal(false);
   }
 
   async function handleSubmit(data: Activity) {
@@ -186,42 +203,7 @@ export default function Itinerary() {
     } else {
       setActivities((activities) => [...activities, data]);
     }
+
+    setShowModal(false);
   }
-}
-
-interface CreateActivityDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (data: Activity) => Promise<Response>;
-  onSuccess: (data: Activity) => void;
-}
-
-function CreateActivityDialog({
-  open,
-  onClose,
-  onSubmit,
-  onSuccess,
-}: CreateActivityDialogProps) {
-  const dialog = useRef<HTMLDialogElement>(null);
-
-  useEffect(() => {
-    if (open) {
-      dialog.current?.showModal();
-    } else {
-      dialog.current?.close();
-    }
-  }, [open, onClose]);
-
-  return (
-    <dialog ref={dialog} onClose={onClose} style={{ width: 'auto' }}>
-      <header>
-        <h1>Create activity</h1>
-        <button onClick={onClose} type="button">
-          Close
-        </button>
-      </header>
-
-      <EditActivityForm onSubmit={onSubmit} onSuccess={onSuccess} />
-    </dialog>
-  );
 }

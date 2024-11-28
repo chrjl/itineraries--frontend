@@ -1,31 +1,56 @@
 import { Link, useNavigate } from 'react-router';
 
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
 export default function CreateItinerary() {
   const navigate = useNavigate();
 
   return (
     <>
       <header>
-        <nav>
-          <ul>
-            <li>
-              <Link to="..">itineraries</Link> &gt;
-            </li>
-            <li>new</li>
-          </ul>
-        </nav>
+        <Navbar bg="dark" data-bs-theme="dark">
+          <Container>
+            <Navbar.Brand>Create itinerary</Navbar.Brand>
+          </Container>
+        </Navbar>
 
-        <h1>Create new itinerary</h1>
+        <Container>
+          <Breadcrumb>
+            <Breadcrumb.Item active>
+              <Link to="..">Itineraries</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item active>new</Breadcrumb.Item>
+          </Breadcrumb>
+        </Container>
       </header>
-      <section>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="name">Itinerary title:</label>
-          <input type="text" id="name" name="name" />
-          <label htmlFor="email">Email:</label>
-          <input type="text" id="email" name="email" />
-          <button type="submit">Submit</button>
-        </form>
-      </section>
+
+      <main>
+        <section>
+          <Container>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-3" controlId="name">
+                <Form.Label>Itinerary title</Form.Label>
+                <Form.Control
+                  name="name"
+                  type="text"
+                  placeholder="Enter itinerary title"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control name="email" type="email" placeholder="Email" />
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </Container>
+        </section>
+      </main>
     </>
   );
 
@@ -50,6 +75,6 @@ export default function CreateItinerary() {
     }
 
     const file = await response.json();
-    navigate(`${file.id}`);
+    navigate(`../${file.id}`);
   }
 }
