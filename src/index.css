@@ -1,33 +1,26 @@
 @media print {
-  header nav,
-  header button {
-    display: none;
-  }
-
-  main,
-  header {
-    padding: 0;
+  #root > header,
+  .breadcrumb,
+  .table button,
+  #activities-cards {
+    display: none !important;
   }
 
   section {
-    page-break-inside: avoid;
-  }
-
-  hr {
-    margin: 0;
+    page-break-inside: avoid !important;
   }
 
   table {
-    max-width: 100vw;
-    table-layout: fixed;
-    white-space: wrap;
+    width: 100vw !important;
+    table-layout: fixed !important;
+    white-space: wrap !important;
   }
 
-  table button {
-    display: none;
+  .table-responsive {
+    overflow: unset;
   }
 
-  #activities-cards {
-    display: none;
+  .container {
+    margin: 0;
   }
 }
