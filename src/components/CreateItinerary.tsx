@@ -64,7 +64,7 @@ export default function CreateItinerary() {
 
     const data = Object.fromEntries(new FormData(e.currentTarget));
 
-    const response = await fetch('/api/itineraries', {
+    const response = await fetch(`${apiBase}/itineraries`, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {

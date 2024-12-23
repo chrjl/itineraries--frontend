@@ -16,6 +16,7 @@ import MetadataModal from './MetadataModal';
 export interface Activity {
   category: 'activity' | 'transportation' | 'housing';
   name: string;
+  index: number;
   itinerary?: string;
   location_1?: string;
   location_2?: string;
@@ -28,6 +29,8 @@ export interface Activity {
 export default function Itinerary() {
   const { id } = useParams();
   const [metadata, setMetadata] = useContext(MetadataContext);
+  const { apiBase } = metadata;
+
   const [activities, setActivities] = useState<Activity[]>([]);
   const [housing, setHousing] = useState<Activity[]>([]);
   const [transportation, setTransportation] = useState<Activity[]>([]);
@@ -37,7 +40,7 @@ export default function Itinerary() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`/api/itineraries/${id}`)
+    fetch(`${apiBase}/itineraries/${id}`)
       .then((response) => {
         if (response.status >= 400) {
           throw new Error(response.statusText);
@@ -68,7 +71,7 @@ export default function Itinerary() {
         alert('There was an error. Redirecting...');
         navigate('/');
       });
-  }, [id, navigate]);
+  }, [id, apiBase, navigate]);
 
   if (!id) {
     return null;
@@ -179,7 +182,7 @@ export default function Itinerary() {
       return;
     }
 
-    await fetch(`/api/itineraries/${id}`, {
+    await fetch(`${apiBase}/itineraries/${id}`, {
       method: 'DELETE',
     });
 
@@ -195,7 +198,9 @@ export default function Itinerary() {
   }
 
   async function handleSubmit(data: Activity) {
-    const response = await fetch(`/api/itineraries/${id}`, {
+    const { category } = data;
+
+    const response = await fetch(`${apiBase}/itineraries/${id}/${category}`, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {

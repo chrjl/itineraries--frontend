@@ -23,6 +23,7 @@ export default function ActivitiesTable({
   setActivities,
 }: Props) {
   const [metadata] = useContext(MetadataContext);
+  const { apiBase } = metadata;
 
   const [showModal, setShowModal] = useState(false);
   const [focusedActivity, setFocusedActivity] = useState<Activity>(
@@ -66,8 +67,8 @@ export default function ActivitiesTable({
           </tr>
         </thead>
         <tbody>
-          {activities.map((activity, index) => (
-            <tr key={index}>
+          {activities.map((activity) => (
+            <tr key={activity.index}>
               <th>{activity.name}</th>
               <td>{activity.itinerary}</td>
               <td>{activity['location_1']}</td>
@@ -80,14 +81,14 @@ export default function ActivitiesTable({
                 <ButtonGroup>
                   <Button
                     size="sm"
-                    onClick={() => handleOpenModal(index, activity)}
+                    onClick={() => handleOpenModal(activity.index, activity)}
                   >
                     Edit
                   </Button>
                   <Button
                     size="sm"
                     variant="danger"
-                    onClick={() => handleDelete(id, category, index)}
+                    onClick={() => handleDelete(id, category, activity.index)}
                   >
                     Delete
                   </Button>
@@ -109,23 +110,18 @@ export default function ActivitiesTable({
       return;
     }
 
-    const filteredActivities = activities.filter(
-      (_, index) => index !== deletedIndex
+    const response = await fetch(
+      `${apiBase}/itineraries/${id}/${category}/${deletedIndex}`,
+      { method: 'DELETE' }
     );
-
-    const response = await fetch(`/api/itineraries/${id}/${category}`, {
-      method: 'PUT',
-      body: JSON.stringify(filteredActivities),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
 
     if (response.status >= 400) {
       return alert('An error occurred.');
     }
 
-    setActivities(filteredActivities);
+    setActivities((activities) =>
+      activities.filter((activity) => activity.index !== deletedIndex)
+    );
     alert('Success!');
   }
 
@@ -144,17 +140,14 @@ export default function ActivitiesTable({
       throw new Error('An error occurred');
     }
 
-    const updatedActivities = [...activities];
-
-    updatedActivities[focusedIndex] = data as unknown as Activity;
-
-    const response = await fetch(`/api/itineraries/${id}/${category}`, {
-      method: 'PUT',
-      body: JSON.stringify(updatedActivities),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${apiBase}/itineraries/${id}/${category}/${focusedIndex}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
 
     return response;
   }
@@ -165,8 +158,9 @@ export default function ActivitiesTable({
         throw new Error('Something went wrong');
       }
 
-      const updatedActivities = [...activities];
-      updatedActivities[focusedIndex] = data;
+      const updatedActivities = activities.map((activity) =>
+        activity.index === focusedIndex ? data : activity
+      );
 
       return updatedActivities;
     });

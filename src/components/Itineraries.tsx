@@ -23,10 +23,16 @@ export default function Itineraries() {
   const { apiBase } = metadata;
 
   useEffect(() => {
-    fetch('/api/itineraries')
+    fetch(`${apiBase}/itineraries`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
       .then((response) => response.json())
       .then((itineraries) => setItineraries(itineraries));
-  }, []);
+  }, [apiBase]);
 
   return (
     <>
