@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
+
+import MetadataContext from '../contexts/MetadataContext';
+import MetadataModal from './MetadataModal';
 
 interface Itinerary {
   id: string;
@@ -16,6 +19,8 @@ interface Itinerary {
 
 export default function Itineraries() {
   const [itineraries, setItineraries] = useState<Itinerary[] | null>(null);
+  const [metadata, setMetadata] = useContext(MetadataContext);
+  const { apiBase } = metadata;
 
   useEffect(() => {
     fetch('/api/itineraries')
@@ -30,10 +35,13 @@ export default function Itineraries() {
           <Container>
             <Navbar.Brand>Itineraries</Navbar.Brand>
 
-            {/* @ts-expect-error bootstrap bug */}
-            <Button as={Link} to="new" size="sm" variant="success">
-              Create new
-            </Button>
+            <span>
+              <MetadataModal metadata={metadata} setMetadata={setMetadata} />
+              {/* @ts-expect-error bootstrap bug */}
+              <Button as={Link} to="new" size="sm" variant="success">
+                Create new
+              </Button>
+            </span>
           </Container>
         </Navbar>
       </header>

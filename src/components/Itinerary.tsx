@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link, useParams, useNavigate } from 'react-router';
 
 import Navbar from 'react-bootstrap/Navbar';
@@ -9,6 +9,9 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import ActivitiesTable from './ActivitiesTable';
 import ActivitiesCards from './ActivitiesCards';
 import ActivityEditorModal from './ActivityEditorModal';
+
+import MetadataContext from '../contexts/MetadataContext';
+import MetadataModal from './MetadataModal';
 
 export interface Activity {
   category: 'activity' | 'transportation' | 'housing';
@@ -24,6 +27,7 @@ export interface Activity {
 
 export default function Itinerary() {
   const { id } = useParams();
+  const [metadata, setMetadata] = useContext(MetadataContext);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [housing, setHousing] = useState<Activity[]>([]);
   const [transportation, setTransportation] = useState<Activity[]>([]);
@@ -76,9 +80,16 @@ export default function Itinerary() {
         <Navbar bg="black" data-bs-theme="dark">
           <Container>
             <Navbar.Brand>{name}</Navbar.Brand>
-            <Button variant="danger" size="sm" onClick={handleDeleteItinerary}>
-              Delete
-            </Button>
+            <span>
+              <MetadataModal metadata={metadata} setMetadata={setMetadata} />
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={handleDeleteItinerary}
+              >
+                Delete
+              </Button>
+            </span>
           </Container>
         </Navbar>
 

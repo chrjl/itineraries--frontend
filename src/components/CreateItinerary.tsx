@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router';
 
 import Navbar from 'react-bootstrap/Navbar';
@@ -6,8 +7,12 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
+import MetadataContext from '../contexts/MetadataContext';
+
 export default function CreateItinerary() {
   const navigate = useNavigate();
+  const [metadata] = useContext(MetadataContext);
+  const { apiBase } = metadata;
 
   return (
     <>

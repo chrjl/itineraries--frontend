@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 
 import Table from 'react-bootstrap/Table';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -6,6 +6,8 @@ import Button from 'react-bootstrap/Button';
 
 import ActivityEditorModal from './ActivityEditorModal';
 import type { Activity } from './Itinerary';
+
+import MetadataContext from '../contexts/MetadataContext';
 
 interface Props {
   id: string;
@@ -20,6 +22,8 @@ export default function ActivitiesTable({
   activities,
   setActivities,
 }: Props) {
+  const [metadata] = useContext(MetadataContext);
+
   const [showModal, setShowModal] = useState(false);
   const [focusedActivity, setFocusedActivity] = useState<Activity>(
     {} as Activity
