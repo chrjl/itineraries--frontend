@@ -50,20 +50,22 @@ export default function Itinerary() {
       })
       .then((itinerary) => {
         setName(itinerary.name);
-
-        const data = itinerary.data;
-        data.sort((a: Activity, b: Activity) =>
-          (a['date_start'] || 'Z') < (b['date_start'] || 'Z') ? -1 : 1
-        );
+        const { data } = itinerary;
 
         setActivities(
-          data?.filter((entry: Activity) => entry.category === 'activity')
+          data.activities.sort((a: Activity, b: Activity) =>
+            (a['date_start'] || 'Z') < (b['date_start'] || 'Z') ? -1 : 1
+          )
         );
         setHousing(
-          data?.filter((entry: Activity) => entry.category === 'housing')
+          data.housing.sort((a: Activity, b: Activity) =>
+            (a['date_start'] || 'Z') < (b['date_start'] || 'Z') ? -1 : 1
+          )
         );
         setTransportation(
-          data?.filter((entry: Activity) => entry.category === 'transportation')
+          data.transportation.sort((a: Activity, b: Activity) =>
+            (a['date_start'] || 'Z') < (b['date_start'] || 'Z') ? -1 : 1
+          )
         );
       })
       .catch((err) => {

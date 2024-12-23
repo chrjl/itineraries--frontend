@@ -71,7 +71,7 @@ export function ActivityEditorForm({
           value={category}
           disabled={Boolean(category)}
         >
-          <option value="activity">Activity</option>
+          <option value="activities">Activity</option>
           <option value="transportation">Transportation</option>
           <option value="housing">Housing</option>
         </Form.Select>
