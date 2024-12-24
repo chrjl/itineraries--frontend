@@ -5,6 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Spinner from 'react-bootstrap/Spinner';
 
 import ActivitiesTable from './ActivitiesTable';
 import ActivitiesCards from './ActivitiesCards';
@@ -36,10 +37,13 @@ export default function Itinerary() {
   const [transportation, setTransportation] = useState<Activity[]>([]);
   const [name, setName] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    setLoadingStatus(true);
+
     fetch(`${apiBase}/itineraries/${id}`)
       .then((response) => {
         if (response.status >= 400) {
@@ -72,7 +76,8 @@ export default function Itinerary() {
         console.error(err);
         alert('There was an error. Redirecting...');
         navigate('/');
-      });
+      })
+      .finally(() => setLoadingStatus(false));
   }, [id, apiBase, navigate]);
 
   if (!id) {
@@ -123,57 +128,66 @@ export default function Itinerary() {
           onSuccess={handleSuccess}
         />
 
-        {activities && (
-          <section className="pb-4">
-            <Container>
-              <header>
-                <h2>Activities</h2>
-              </header>
+        {loadingStatus ? (
+          <Spinner
+            animation="border"
+            className="position-absolute top-50 start-50"
+          />
+        ) : (
+          <>
+            {activities && (
+              <section className="pb-4">
+                <Container>
+                  <header>
+                    <h2>Activities</h2>
+                  </header>
 
-              <div id="activities-cards" className="pb-4">
-                <ActivitiesCards activities={activities} />
-              </div>
+                  <div id="activities-cards" className="pb-4">
+                    <ActivitiesCards activities={activities} />
+                  </div>
 
-              <ActivitiesTable
-                id={id}
-                category="activities"
-                activities={activities}
-                setActivities={setActivities}
-              />
-            </Container>
-          </section>
-        )}
+                  <ActivitiesTable
+                    id={id}
+                    category="activities"
+                    activities={activities}
+                    setActivities={setActivities}
+                  />
+                </Container>
+              </section>
+            )}
 
-        {transportation && (
-          <section className="pb-4">
-            <Container>
-              <header>
-                <h2>Transportation</h2>
-              </header>
-              <ActivitiesTable
-                id={id}
-                category="transportation"
-                activities={transportation}
-                setActivities={setTransportation}
-              />
-            </Container>
-          </section>
-        )}
+            {transportation && (
+              <section className="pb-4">
+                <Container>
+                  <header>
+                    <h2>Transportation</h2>
+                  </header>
+                  <ActivitiesTable
+                    id={id}
+                    category="transportation"
+                    activities={transportation}
+                    setActivities={setTransportation}
+                  />
+                </Container>
+              </section>
+            )}
 
-        {housing && (
-          <section className="pb-4">
-            <Container>
-              <header>
-                <h2>Housing</h2>
-              </header>
-              <ActivitiesTable
-                id={id}
-                category="housing"
-                activities={housing}
-                setActivities={setHousing}
-              />
-            </Container>
-          </section>
+            {housing && (
+              <section className="pb-4">
+                <Container>
+                  <header>
+                    <h2>Housing</h2>
+                  </header>
+                  <ActivitiesTable
+                    id={id}
+                    category="housing"
+                    activities={housing}
+                    setActivities={setHousing}
+                  />
+                </Container>
+              </section>
+            )}
+          </>
         )}
       </main>
     </>
