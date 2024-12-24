@@ -217,7 +217,7 @@ export default function Itinerary() {
     if (data.category === 'housing') {
       setHousing((housing) => [...housing, data]);
     } else if (data.category === 'transportation') {
-      setHousing((housing) => [...housing, data]);
+      setTransportation((transportation) => [...transportation, data]);
     } else {
       setActivities((activities) => [...activities, data]);
     }

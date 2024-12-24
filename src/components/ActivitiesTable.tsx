@@ -59,8 +59,8 @@ export default function ActivitiesTable({
             <th>Itinerary#</th>
             <th>{category === 'transportation' ? 'From' : 'Location'}</th>
             <th>{category === 'transportation' ? 'To' : 'Detail'}</th>
-            <th>Date Start</th>
-            <th>Date End</th>
+            <th>Start</th>
+            <th>End</th>
             <th>Cost</th>
             <th>Notes</th>
             <th></th>

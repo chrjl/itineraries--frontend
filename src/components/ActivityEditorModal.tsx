@@ -54,7 +54,7 @@ export function ActivityEditorForm({
 }: ActivityEditorFormProps) {
   const [isTransportation, setIsTransportation] = useState(false);
 
-  const category = defaultValues?.category
+  const category = defaultValues?.category;
   const defaultStartDate = defaultValues?.date_start?.slice(0, 10);
   const defaultStartTime = defaultValues?.date_start?.slice(11);
   const defaultEndDate = defaultValues?.date_end?.slice(0, 10);

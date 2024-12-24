@@ -31,7 +31,7 @@ export default function ActivitiesCards({ activities }: ActivitiesCardsProps) {
                 </Card.Subtitle>
                 <Card.Text>
                   <small>
-                    <p>
+                    <span>
                       {date_start?.split('T').join(' ')}
                       {date_end !== date_start ? (
                         <>
@@ -41,8 +41,8 @@ export default function ActivitiesCards({ activities }: ActivitiesCardsProps) {
                           {date_end?.split('T').join(' ')}
                         </>
                       ) : null}
-                    </p>
-                    {cost && <p>Cost: {cost}</p>}
+                    </span>
+                    {cost && <span>Cost: {cost}</span>}
                   </small>
                 </Card.Text>
               </Card.Body>
