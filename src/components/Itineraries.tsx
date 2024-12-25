@@ -34,11 +34,21 @@ export default function Itineraries() {
         'Access-Control-Allow-Origin': '*',
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status >= 400) {
+          throw new Error(response.statusText);
+        }
+        
+        return response.json();
+      })
       .then((itineraries) => {
         setItineraries(itineraries);
-        setLoadingStatus(false);
-      });
+      })
+      .catch((err) => {
+        console.error(err);
+        alert(err);
+      })
+      .finally(() => setLoadingStatus(false));
   }, [apiBase]);
 
   return (
